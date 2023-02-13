@@ -123,39 +123,37 @@ openlogo = """
 
 							SpamixOfficial 2022
 """
-if debugmode == True:
-	print("Debugmode")
-	print("\r" + str(fullcolorcheck) + str(fullkeycheck))
-for a in "Hello and welcome to":
-	time.sleep(0.01)
-	print(color + a, end="")
-time.sleep(0.06)
-for a in "...":
-	print(color + a, end="")
-	time.sleep(0.2)
 
-os.system("clear")
-for char in openlogo:
-	print(color + char, end="")
-	time.sleep(0.0003)
+#dont run program if help flag is used
+if "-h" not in sys.argv and "--help" not in sys.argv:
+	if debugmode == True:
+		print("Debugmode")
+		print("\r" + str(fullcolorcheck) + str(fullkeycheck))
+	for a in "Hello and welcome to":
+		time.sleep(0.01)
+		print(color + a, end="")
+	time.sleep(0.06)
+	for a in "...":
+		print(color + a, end="")
+		time.sleep(0.2)
 
+	os.system("clear")
+	for char in openlogo:
+		print(color + char, end="")
+		time.sleep(0.0003)
+
+	print(color + "Controls: \n" + str(hotkey) + " to click (hold to click!) \n" + str(constantKey) + " to click constantly (toggle on/off by clicking the key!)\nEsc to exit!")
 ## Start of clicker code
 shouldClick = False # controlls the constantclick
 
 # this is Flag class handling constantclick delay
-class AutoDelay(Flag):
-	shortFlag="-cd"
-	longFlag="-constantClickDelay"
-	description='sets the constantclick delay (default 0.1 secounds between clicks)'
-	def onCall(self,args):
-		global contantClickDelay
-		contantClickDelay = float(args[0])
+def setDelay(args):
+	global contantClickDelay
+	contantClickDelay = float(args[0])
 
-a = FlagManager([AutoDelay()])
+a = FlagManager([Flag("-cd", "--constantClickDelay","sets the constantclick delay (default 0.1 secounds between clicks", onCall=setDelay)])
 a.check()
 
-
-print(color + "Controls: \n" + str(hotkey) + " to click (hold to click!) \n" + str(constantKey) + " to click constantly (toggle on/off by clicking the key!)\nEsc to exit!")
 
 def on_press(key):
 	global Key
@@ -204,9 +202,11 @@ def autoClick():
 		mouse.release(Button.left)
 		time.sleep(contantClickDelay) #add delay
 
-# Collect events until released
-with Listener(
-		on_press=on_press,
-		on_release=on_release) as listener:
-	listener.join()
+#dont run program if help flag is used
+if "-h" not in sys.argv and "--help" not in sys.argv:
+	# Collect events until released
+	with Listener(
+			on_press=on_press,
+			on_release=on_release) as listener:
+		listener.join()
 
